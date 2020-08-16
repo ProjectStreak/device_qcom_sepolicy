@@ -1,4 +1,4 @@
-# Copyright (c) 2018, The Linux Foundation. All rights reserved.
+# Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -25,6 +25,22 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# sysmonapp applications
-user=_app seinfo=sysmonapp domain=sysmonapp_app name=com.qualcomm.sysmonappInternal type=app_data_file levelFrom=all
-user=_app seinfo=sysmonapp domain=sysmonapp_app name=com.qualcomm.qti.sysmonappExternal type=app_data_file levelFrom=all
+
+type poweroptservice, domain;
+type poweroptservice_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(poweroptservice)
+
+hwbinder_use(poweroptservice)
+add_hwservice(poweroptservice, hal_perfcallback_hwservice)
+
+hal_client_domain(poweroptservice, hal_perf)
+get_prop(poweroptservice, vendor_mpctl_prop)
+
+r_dir_file(poweroptservice, sysfs_graphics)
+r_dir_file(poweroptservice, sysfs_kgsl)
+r_dir_file(poweroptservice, sysfs_android_usb)
+
+hal_client_domain(poweroptservice, hal_graphics_composer);
+allow poweroptservice qdisplay_service:service_manager find;
+
